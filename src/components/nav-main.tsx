@@ -12,6 +12,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "#/components/ui/sidebar"
+import { Link } from "@tanstack/react-router"
 import { ChevronRightIcon, PlusIcon } from "lucide-react"
 
 export function NavMain({
@@ -41,7 +42,7 @@ export function NavMain({
           if (!item.items || item.items.length === 0) {
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton tooltip={item.title} render={<Link to={item.url} />}>
                   {item.icon}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
@@ -67,7 +68,7 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton render={<a href={subItem.url} />}>
+                      <SidebarMenuSubButton render={<Link to={subItem.url} />}>
                         <span>{subItem.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
