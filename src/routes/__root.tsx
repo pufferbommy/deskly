@@ -1,4 +1,5 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import * as React from 'react'
+import { HeadContent, Scripts, createRootRoute, useLocation, Link } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -52,19 +53,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                     orientation="vertical"
                     className="mr-2 data-[orientation=vertical]:h-4 self-center!"
                   />
-                  <Breadcrumb>
-                    <BreadcrumbList>
-                      <BreadcrumbItem className="hidden md:block">
-                        <BreadcrumbLink href="#">
-                          Build Your Application
-                        </BreadcrumbLink>
-                      </BreadcrumbItem>
-                      <BreadcrumbSeparator className="hidden md:block" />
-                      <BreadcrumbItem>
-                        <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </BreadcrumbList>
-                  </Breadcrumb>
+                  <DynamicBreadcrumbs />
                 </div>
               </header>
               <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -87,5 +76,47 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function DynamicBreadcrumbs() {
+  const location = useLocation()
+  const pathnames = location.pathname.split('/').filter((x) => x)
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          {pathnames.length === 0 ? (
+            <BreadcrumbPage>Discover</BreadcrumbPage>
+          ) : (
+            <BreadcrumbLink render={<Link to="/" />}>
+              Discover
+            </BreadcrumbLink>
+          )}
+        </BreadcrumbItem>
+        
+        {pathnames.map((value, index) => {
+          const isLast = index === pathnames.length - 1
+          const to = `/${pathnames.slice(0, index + 1).join('/')}`
+          const title = value.charAt(0).toUpperCase() + value.slice(1).replace(/-/g, ' ')
+
+          return (
+            <React.Fragment key={to}>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                {isLast ? (
+                  <BreadcrumbPage>{title}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink render={<Link to={to} />}>
+                    {title}
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </React.Fragment>
+          )
+        })}
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 }
