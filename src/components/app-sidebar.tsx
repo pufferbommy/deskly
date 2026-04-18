@@ -14,11 +14,9 @@ import {
 } from "#/components/ui/sidebar"
 import {
   MapIcon,
-  PlusCircleIcon,
   SlidersHorizontalIcon,
   BookmarkIcon,
   MessageSquareIcon,
-  Settings2Icon,
   BriefcaseIcon,
 } from "lucide-react"
 import { Link } from "@tanstack/react-router"
@@ -96,36 +94,6 @@ const data = {
         {
           title: "Top Rated",
           url: "/reviews/top",
-        },
-      ],
-    },
-    {
-      title: "Add New Place",
-      url: "/add",
-      icon: <PlusCircleIcon />,
-      items: [
-        {
-          title: "Submit a Place",
-          url: "/add",
-        },
-        {
-          title: "My Submissions",
-          url: "/add/history",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: <Settings2Icon />,
-      items: [
-        {
-          title: "Profile",
-          url: "/settings/profile",
-        },
-        {
-          title: "Preferences",
-          url: "/settings/preferences",
         },
       ],
     },

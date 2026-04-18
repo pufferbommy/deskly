@@ -5,7 +5,6 @@ import {
 } from "#/components/ui/collapsible"
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -13,7 +12,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "#/components/ui/sidebar"
-import { ChevronRightIcon } from "lucide-react"
+import { ChevronRightIcon, PlusIcon } from "lucide-react"
 
 export function NavMain({
   items,
@@ -31,8 +30,13 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton variant="primary" tooltip="Add New Place">
+            <PlusIcon />
+            <span>New Place</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         {items.map((item) => (
           <Collapsible
             key={item.title}
