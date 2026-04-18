@@ -12,7 +12,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "#/components/ui/sidebar"
-import { Link } from "@tanstack/react-router"
+import { Link, useLocation } from "@tanstack/react-router"
 import { ChevronRightIcon, PlusIcon } from "lucide-react"
 
 export function NavMain({
@@ -29,6 +29,13 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const location = useLocation()
+
+  const checkActive = (url: string) => {
+    if (url === "/") return location.pathname === "/"
+    return location.pathname.startsWith(url)
+  }
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -39,10 +46,12 @@ export function NavMain({
           </SidebarMenuButton>
         </SidebarMenuItem>
         {items.map((item) => {
+          const isActive = checkActive(item.url)
+
           if (!item.items || item.items.length === 0) {
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title} render={<Link to={item.url} />}>
+                <SidebarMenuButton isActive={isActive} tooltip={item.title} render={<Link to={item.url} />}>
                   {item.icon}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
@@ -58,7 +67,7 @@ export function NavMain({
               render={<SidebarMenuItem />}
             >
               <CollapsibleTrigger
-                render={<SidebarMenuButton tooltip={item.title} />}
+                render={<SidebarMenuButton isActive={isActive} tooltip={item.title} />}
               >
                 {item.icon}
                 <span>{item.title}</span>
