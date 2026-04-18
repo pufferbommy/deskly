@@ -11,6 +11,9 @@ import { Separator } from '#/components/ui/separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '#/components/ui/breadcrumb'
 import { APP_NAME } from '#/lib/config'
 
+import { Moon, Sun } from "lucide-react"
+import { Button } from "#/components/ui/button"
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -46,7 +49,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+              <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 pr-4">
                 <div className="flex items-center gap-2 px-4">
                   <SidebarTrigger className="-ml-1" />
                   <Separator
@@ -55,6 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   />
                   <DynamicBreadcrumbs />
                 </div>
+                <ThemeToggle />
               </header>
               <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                 {children}
@@ -118,5 +122,35 @@ function DynamicBreadcrumbs() {
         })}
       </BreadcrumbList>
     </Breadcrumb>
+  )
+}
+
+function ThemeToggle() {
+  const [isDark, setIsDark] = React.useState(false)
+
+  React.useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"))
+  }, [])
+
+  const toggleTheme = () => {
+    const root = document.documentElement
+    if (isDark) {
+      root.classList.remove("dark")
+    } else {
+      root.classList.add("dark")
+    }
+    setIsDark(!isDark)
+  }
+
+  return (
+    <Button 
+      variant="ghost" 
+      size="icon" 
+      onClick={toggleTheme} 
+      className="rounded-full shrink-0"
+    >
+      {isDark ? <Sun className="size-5 text-amber-500" /> : <Moon className="size-5 text-indigo-500" />}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   )
 }
