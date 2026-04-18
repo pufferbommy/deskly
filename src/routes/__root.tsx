@@ -8,6 +8,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '#/components/ui/s
 import { AppSidebar } from '#/components/app-sidebar'
 import { Separator } from '#/components/ui/separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '#/components/ui/breadcrumb'
+import { APP_NAME } from '#/lib/config'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -20,7 +21,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'deskly',
+        title: APP_NAME
       },
     ],
     links: [

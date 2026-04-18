@@ -20,6 +20,7 @@ import {
   BriefcaseIcon,
 } from "lucide-react"
 import { Link } from "@tanstack/react-router"
+import { APP_NAME } from "#/lib/config"
 
 const data = {
   user: {
@@ -109,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton render={
               <Link to="/">
                 <BriefcaseIcon />
-                <span className="font-semibold text-base">Deskly</span>
+                <span className="font-semibold text-base">{APP_NAME}</span>
               </Link>
             } />
           </SidebarMenuItem>
