@@ -1,176 +1,133 @@
 "use client"
 
-import * as React from "react"
-
 import { NavMain } from "#/components/nav-main"
-import { NavProjects } from "#/components/nav-projects"
 import { NavUser } from "#/components/nav-user"
-import { TeamSwitcher } from "#/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "#/components/ui/sidebar"
-import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon } from "lucide-react"
+import {
+  MapIcon,
+  PlusCircleIcon,
+  SlidersHorizontalIcon,
+  BookmarkIcon,
+  MessageSquareIcon,
+  Settings2Icon,
+  BriefcaseIcon,
+} from "lucide-react"
+import { Link } from "@tanstack/react-router"
 
-// This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Traveler",
+    email: "traveler@deskly.app",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: (
-        <GalleryVerticalEndIcon
-        />
-      ),
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: (
-        <AudioLinesIcon
-        />
-      ),
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: (
-        <TerminalIcon
-        />
-      ),
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: (
-        <TerminalSquareIcon
-        />
-      ),
+      title: "Discover",
+      url: "/",
+      icon: <MapIcon />,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Map View",
+          url: "/",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "List View",
+          url: "/places",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: (
-        <BotIcon
-        />
-      ),
+      title: "Filter Places",
+      url: "/filter",
+      icon: <SlidersHorizontalIcon />,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Wi-Fi Quality",
+          url: "/filter?wifi=true",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Power Outlets",
+          url: "/filter?outlets=true",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Noise Level",
+          url: "/filter?noise=quiet",
+        },
+        {
+          title: "Open Now",
+          url: "/filter?open=true",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: (
-        <BookOpenIcon
-        />
-      ),
+      title: "My Places",
+      url: "/saved",
+      icon: <BookmarkIcon />,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Saved",
+          url: "/saved",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Recently Viewed",
+          url: "/history",
+        },
+      ],
+    },
+    {
+      title: "Reviews",
+      url: "/reviews",
+      icon: <MessageSquareIcon />,
+      items: [
+        {
+          title: "My Reviews",
+          url: "/reviews/mine",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Top Rated",
+          url: "/reviews/top",
+        },
+      ],
+    },
+    {
+      title: "Add New Place",
+      url: "/add",
+      icon: <PlusCircleIcon />,
+      items: [
+        {
+          title: "Submit a Place",
+          url: "/add",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "My Submissions",
+          url: "/add/history",
         },
       ],
     },
     {
       title: "Settings",
-      url: "#",
-      icon: (
-        <Settings2Icon
-        />
-      ),
+      url: "/settings",
+      icon: <Settings2Icon />,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Profile",
+          url: "/settings/profile",
         },
         {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Preferences",
+          url: "/settings/preferences",
         },
       ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: (
-        <FrameIcon
-        />
-      ),
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: (
-        <PieChartIcon
-        />
-      ),
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: (
-        <MapIcon
-        />
-      ),
     },
   ],
 }
@@ -179,11 +136,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton render={
+              <Link to="/">
+                <BriefcaseIcon />
+                <span className="font-semibold text-base">Deskly</span>
+              </Link>
+            } />
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
