@@ -1,11 +1,9 @@
 "use client"
 
 import { NavMain } from "#/components/nav-main"
-import { NavUser } from "#/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -21,11 +19,6 @@ import { Link } from "@tanstack/react-router"
 import { APP_NAME } from "#/lib/config"
 
 const data = {
-  user: {
-    name: "Traveler",
-    email: "traveler@deskly.app",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Discover",
@@ -59,9 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   )
