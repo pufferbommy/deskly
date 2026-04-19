@@ -2,36 +2,13 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent } from '#/components/ui/card'
 import { Badge } from '#/components/ui/badge'
 import { WifiIcon, ZapIcon, Volume2Icon, StarIcon, BookmarkIcon } from 'lucide-react'
+import { useLiveQuery } from "dexie-react-hooks"
+import { db } from '#/lib/db'
+import PLACES_DATA from '../../public/data/places.json'
 
 export const Route = createFileRoute('/saved')({
   component: SavedPlacesComponent,
 })
-
-// Using a subset of places to simulate "saved" ones
-const SAVED_PLACES = [
-  {
-    id: '1',
-    name: 'The Common Coffee',
-    distance: '0.5 km',
-    wifi: 'good',
-    outlets: 'yes',
-    noise: 'quiet',
-    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=400&h=300&auto=format&fit=crop',
-    tags: ['Quiet', 'Fast Wi-Fi', 'Aircon'],
-    rating: 4.8,
-  },
-  {
-    id: '2',
-    name: 'Digital Nomad Hub',
-    distance: '1.2 km',
-    wifi: 'good',
-    outlets: 'yes',
-    noise: 'medium',
-    image: 'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?q=80&w=400&h=300&auto=format&fit=crop',
-    tags: ['Meeting Rooms', 'Phone Booths'],
-    rating: 4.5,
-  },
-]
 
 const calculateWorkScore = (wifi: string, outlets: string, noise: string) => {
   let score = 0
@@ -47,6 +24,12 @@ const calculateWorkScore = (wifi: string, outlets: string, noise: string) => {
 }
 
 function SavedPlacesComponent() {
+  const savedPlaces = useLiveQuery(() => db.savedPlaces.toArray())
+  const savedIds = new Set(savedPlaces?.map(p => p.placeId) || [])
+
+  // Filter the open data based on what the user saved locally
+  const mySavedSpots = PLACES_DATA.filter(place => savedIds.has(place.id))
+
   return (
     <>
       {/* Header */}
@@ -54,19 +37,19 @@ function SavedPlacesComponent() {
         <div className="flex flex-col gap-1 border-b pb-4">
           <h1 className="text-2xl font-bold tracking-tight">Saved Places</h1>
           <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
-            <BookmarkIcon className="size-4 fill-primary text-primary" /> You have {SAVED_PLACES.length} saved spots
+            <BookmarkIcon className="size-4 fill-primary text-primary" /> You have {mySavedSpots.length} saved spots
           </p>
         </div>
       </div>
 
       {/* List View */}
       <div className="grid gap-4">
-        {SAVED_PLACES.length === 0 ? (
+        {mySavedSpots.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-muted-foreground">You haven't saved any places yet.</p>
           </div>
         ) : (
-          SAVED_PLACES.map((place) => {
+          mySavedSpots.map((place) => {
             const workScore = calculateWorkScore(place.wifi, place.outlets, place.noise)
             
             return (
@@ -74,9 +57,15 @@ function SavedPlacesComponent() {
                 <div className="flex flex-col sm:flex-row relative">
                   
                   {/* Remove Bookmark Button Overlay */}
-                  <div className="absolute top-2 right-2 z-10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-background">
-                     <BookmarkIcon className="size-4 fill-primary text-primary" />
-                  </div>
+                  <button 
+                    onClick={async (e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      await db.savedPlaces.delete(place.id)
+                    }}
+                  className="absolute top-2 right-2 z-10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-background">
+                     <BookmarkIcon className="size-4 fill-primary text-primary hover:fill-none" />
+                  </button>
 
                   {/* Thumbnail */}
                   <div className="relative w-full sm:w-40 h-48 sm:h-auto shrink-0">

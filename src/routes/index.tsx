@@ -2,48 +2,16 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent } from '#/components/ui/card'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
-import { WifiIcon, ZapIcon, Volume2Icon, MapPinIcon, StarIcon, SlidersHorizontalIcon, Search } from 'lucide-react'
+import { WifiIcon, ZapIcon, Volume2Icon, MapPinIcon, StarIcon, SlidersHorizontalIcon, Search, BookmarkIcon } from 'lucide-react'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '#/components/ui/input-group'
+import { useLiveQuery } from "dexie-react-hooks"
+import { db } from '#/lib/db'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
 })
 
-const MOCK_PLACES = [
-  {
-    id: '1',
-    name: 'The Common Coffee',
-    distance: '0.5 km',
-    wifi: 'good',
-    outlets: 'yes',
-    noise: 'quiet',
-    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=400&h=300&auto=format&fit=crop',
-    tags: ['Quiet', 'Fast Wi-Fi', 'Aircon'],
-    rating: 4.8,
-  },
-  {
-    id: '2',
-    name: 'Digital Nomad Hub',
-    distance: '1.2 km',
-    wifi: 'good',
-    outlets: 'yes',
-    noise: 'medium',
-    image: 'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?q=80&w=400&h=300&auto=format&fit=crop',
-    tags: ['Meeting Rooms', 'Phone Booths'],
-    rating: 4.5,
-  },
-  {
-    id: '3',
-    name: 'Cat & Coffee Chat',
-    distance: '2.0 km',
-    wifi: 'ok',
-    outlets: 'no',
-    noise: 'loud',
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=400&h=300&auto=format&fit=crop',
-    tags: ['Cats', 'Outdoor Seating'],
-    rating: 3.9,
-  },
-]
+import MOCK_PLACES from '../../public/data/places.json'
 
 const calculateWorkScore = (wifi: string, outlets: string, noise: string) => {
   let score = 0
@@ -70,6 +38,9 @@ const filters = [
 ]
 
 function RouteComponent() {
+  const savedPlaces = useLiveQuery(() => db.savedPlaces.toArray())
+  const savedIds = new Set(savedPlaces?.map(p => p.placeId) || [])
+
   return (
     <>
       {/* Header & Search */}
@@ -104,10 +75,28 @@ function RouteComponent() {
       <div className="grid gap-4">
         {MOCK_PLACES.map((place) => {
           const workScore = calculateWorkScore(place.wifi, place.outlets, place.noise)
+          const isSaved = savedIds.has(place.id)
           
           return (
-            <Card key={place.id} className="cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all p-0 overflow-hidden">
-              <div className="flex flex-col sm:flex-row">
+            <Card key={place.id} className="cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all p-0 overflow-hidden group">
+              <div className="flex flex-col sm:flex-row relative">
+                
+                {/* Bookmark Toggle */}
+                <button 
+                  onClick={async (e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    if (isSaved) {
+                      await db.savedPlaces.delete(place.id)
+                    } else {
+                      await db.savedPlaces.add({ placeId: place.id, savedAt: Date.now() })
+                    }
+                  }}
+                  className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-sm bg-background/80 hover:bg-background backdrop-blur-sm transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                >
+                  <BookmarkIcon className={`size-4 transition-colors ${isSaved ? "fill-primary text-primary" : "text-muted-foreground hover:text-primary"}`} />
+                </button>
+
                 {/* Thumbnail */}
                 <div className="relative w-full sm:w-40 h-48 sm:h-auto shrink-0">
                   <img 
