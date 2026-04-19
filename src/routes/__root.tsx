@@ -13,6 +13,8 @@ import { APP_NAME } from '#/lib/config'
 
 import { Moon, Sun } from "lucide-react"
 import { Button } from "#/components/ui/button"
+import { ThemeProvider, useTheme } from '#/components/theme-provider'
+import { getThemeServerFn } from '#/lib/theme'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -35,37 +37,42 @@ export const Route = createRootRoute({
       },
     ],
   }),
+  loader: () => getThemeServerFn(),
   shellComponent: RootDocument,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const theme = Route.useLoaderData();
+
   return (
-    <html lang="th" suppressHydrationWarning>
+    <html lang="th" className={theme} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body className="font-sans antialiased">
-        <TooltipProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 pr-4">
-                <div className="flex items-center gap-2 px-4">
-                  <SidebarTrigger className="-ml-1" />
-                  <Separator
-                    orientation="vertical"
-                    className="mr-2 data-[orientation=vertical]:h-4 self-center!"
-                  />
-                  <DynamicBreadcrumbs />
+        <ThemeProvider theme={theme}>
+          <TooltipProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 pr-4">
+                  <div className="flex items-center gap-2 px-4">
+                    <SidebarTrigger className="-ml-1" />
+                    <Separator
+                      orientation="vertical"
+                      className="mr-2 data-[orientation=vertical]:h-4 self-center!"
+                    />
+                    <DynamicBreadcrumbs />
+                  </div>
+                  <ThemeToggle />
+                </header>
+                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                  {children}
                 </div>
-                <ThemeToggle />
-              </header>
-              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                {children}
-              </div>
-            </SidebarInset>
-          </SidebarProvider>
-        </TooltipProvider>
+              </SidebarInset>
+            </SidebarProvider>
+          </TooltipProvider>
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
@@ -126,31 +133,15 @@ function DynamicBreadcrumbs() {
 }
 
 function ThemeToggle() {
-  const [isDark, setIsDark] = React.useState(false)
-
-  React.useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"))
-  }, [])
+  const { theme, setTheme } = useTheme()
 
   const toggleTheme = () => {
-    const root = document.documentElement
-    if (isDark) {
-      root.classList.remove("dark")
-    } else {
-      root.classList.add("dark")
-    }
-    setIsDark(!isDark)
+    setTheme(theme === "light" ? "dark" : "light");
   }
 
   return (
-    <Button 
-      variant="ghost" 
-      size="icon" 
-      onClick={toggleTheme} 
-      className="rounded-full shrink-0"
-    >
-      {isDark ? <Sun className="size-5 text-amber-500" /> : <Moon className="size-5 text-indigo-500" />}
-      <span className="sr-only">Toggle theme</span>
+    <Button variant="ghost" size="icon" className="rounded-full shrink-0" onClick={toggleTheme}>
+      {theme === "dark" ? <Moon /> : <Sun />}
     </Button>
   )
 }
