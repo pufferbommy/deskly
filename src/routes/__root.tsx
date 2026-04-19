@@ -66,8 +66,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   </div>
                   <ThemeToggle />
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                  {children}
+                <div className="flex-1 p-4">
+                  {/* flex flex-col gap-6 max-w-2xl mx-auto pb-20 */}
+                  <div className='container flex flex-col gap-4'>{children}</div>
                 </div>
               </SidebarInset>
             </SidebarProvider>

@@ -71,7 +71,7 @@ const filters = [
 
 function RouteComponent() {
   return (
-    <div className="flex flex-col gap-6 max-w-2xl mx-auto pb-20">
+    <>
       {/* Header & Search */}
       <div className="space-y-4 pt-4">
         <div className="flex flex-col gap-1">
@@ -167,6 +167,6 @@ function RouteComponent() {
           )
         })}
       </div>
-    </div>
+    </>
   )
 }

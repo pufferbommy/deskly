@@ -48,7 +48,7 @@ const calculateWorkScore = (wifi: string, outlets: string, noise: string) => {
 
 function SavedPlacesComponent() {
   return (
-    <div className="flex flex-col gap-6 max-w-2xl mx-auto pb-20">
+    <>
       {/* Header */}
       <div className="space-y-4 pt-4">
         <div className="flex flex-col gap-1 border-b pb-4">
@@ -138,6 +138,6 @@ function SavedPlacesComponent() {
           })
         )}
       </div>
-    </div>
+    </>
   )
 }
